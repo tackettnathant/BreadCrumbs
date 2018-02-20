@@ -1,0 +1,3 @@
+android:theme="@style/Theme.AppCompat.NoActionBar"
+
+^ full screen

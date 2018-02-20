@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Breadcrumbs</string>
+    <string name="action_settings">Settings</string>
+    <string name="main_label"></string>
+    <string name="delete">DELETE</string>
+    <string name="path_name_hint">Name</string>
+    <string name="starting_location_hint">Location</string>
+    <string name="begin">BEGIN</string>
+    <string name="cancel">CANCEL</string>
+    <string name="no_location">Unspecified Location</string>
+    <string name="save_path_error">Unable to save</string>
+    <string name="path_extra">PATH</string>
+    <string name="path_id">PATH_ID</string>
+    <string name="new_path">NEW_PATH</string>
+    <string name="default_prompt">Take a picture.</string>
+    <string name="where_are_you">Where are you?</string>
+</resources>
