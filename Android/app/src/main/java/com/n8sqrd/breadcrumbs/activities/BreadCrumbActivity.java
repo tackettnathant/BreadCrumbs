@@ -82,7 +82,7 @@ public class BreadCrumbActivity extends AppCompatActivity implements AddCrumbFra
 
 
     private void addCrumbClicked(){
-        Toast.makeText(this,"Clicked",Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,"Clicked",Toast.LENGTH_LONG).show();
         AddCrumbFragment fragment = new AddCrumbFragment();
 
         /*
@@ -98,18 +98,16 @@ public class BreadCrumbActivity extends AppCompatActivity implements AddCrumbFra
             lastLocation.setLatitude(lastCrumb.getLatitude());
 
             float distance = lastLocation.distanceTo(mCurrentLocation);
+            Log.i(Constants.TAG,"Distance from last location: " + distance + "m");
             if (distance<Constants.MIN_MOVE_DISTANCE){
-                //((EditText)fragment.getView().findViewById(R.id.add_crumb_location)).setText(lastCrumb.getLocation());
                 fragment.mLocationText=lastCrumb.getLocation();
             }
         }
 
         if (mPathViewModel.mAllPrompts!=null && !mPathViewModel.mAllPrompts.isEmpty()){
             int idx = (int)Math.floor(Math.random() * mPathViewModel.mAllPrompts.size());
-            //((TextView)fragment.getView().findViewById(R.id.crumb_prompt)).setText(mPathViewModel.mAllPrompts.get(idx).getText());
             fragment.mPrompt=mPathViewModel.mAllPrompts.get(idx).getText();
         } else {
-            //((TextView)fragment.getView().findViewById(R.id.crumb_prompt)).setText(getString(R.string.default_prompt));
             fragment.mPrompt=getString(R.string.default_prompt);
         }
 
@@ -352,6 +350,33 @@ public class BreadCrumbActivity extends AppCompatActivity implements AddCrumbFra
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         //Create crumb and launch
+        EditText locText = (EditText)dialog.getDialog().findViewById(R.id.add_crumb_location);
+        Crumb crumb = new Crumb();
+        if (locText!=null && locText.getText()!=null) {
+            crumb.setLocation(locText.getText().toString());
+        } else {
+            crumb.setLocation(getString(R.string.no_location));
+        }
+        TextView textView = (TextView)dialog.getDialog().findViewById(R.id.crumb_prompt);
+        if (textView!=null && textView.getText()!=null) {
+            crumb.setNotes(textView.getText().toString());
+        }
+        if (mCurrentLocation!=null) {
+            crumb.setLatitude(mCurrentLocation.getLatitude());
+            crumb.setLongitude(mCurrentLocation.getLongitude());
+        }
+
+        mCrumbViewModel.insertUpdateCrumb(crumb)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    mCrumbViewModel.setWorkingCrumb(crumb);
+                    mPathViewModel.getCurrentPath().getCrumbs().add(crumb);
+                    mCrumbAdapter.updateData(mPathViewModel.getCurrentPath().getCrumbs());
+                    dispatchTakePictureIntent(mCrumbViewModel.getWorkingCrumb());
+                    dialog.getDialog().cancel();
+                });
+
 
     }
 

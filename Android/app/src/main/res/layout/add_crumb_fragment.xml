@@ -17,7 +17,6 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:id="@+id/add_crumb_location"
-        android:hint="@string/starting_location_hint"
         android:focusedByDefault="true"
         android:gravity="center"
 
